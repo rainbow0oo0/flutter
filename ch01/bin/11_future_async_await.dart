@@ -5,12 +5,23 @@
 */
 
 // Future는 미래에 가져오는 값을 의미하는 객체
+import 'dart:async';
+
 Future<String> fetchData(){
   // 비동기 작업 정의
   return Future.delayed(Duration(seconds: 3), (){
     return 'fetchData!';
   });
 } // 시간, 익명 함수(){} / void → Future / 3초 후에 반환 하는 값 fetchData
+
+// Stream을 반환하는 함수
+Stream<int> countStream() async* {
+
+  for(int i=1; i<=5; i++){
+    Future.delayed(Duration(seconds: 1));
+    yield i; // 스트림으로 데어터는 내보내기(emmit)
+  }
+}
 
 void main() async {
   
@@ -43,5 +54,34 @@ void main() async {
   }
   print('async_await...5');
 
+  /*
+    Future vs Stream
+    - Future는 한 번만 비동기 값을 반환하는 비동기 처리
+    - Stream은 시간이 지남에 따라 여러 데이터를 순차적으로 전달하는 비동기 처리
+   */
+
+  // Stream 작업
+  final controller = StreamController<String>(); // String은 스트림으로 보내는 데이터 타입
+
+  // Stream 리스너 등록
+  controller.stream
+      .listen((data){
+        print('stream...1 : $data');
+      })
+      .onError((err){
+        print('stream error');
+      });
+
+  // 스트림 데이터 전송
+  controller.sink.add('hello');
+  controller.sink.add('welcome');
+  controller.sink.add('greeting');
+
+  // Stream 함수 호출 후 await for 출력
+  Stream<int> stream = countStream();
+
+  await for(int number in stream){
+    print('스트림 데이터 수신 : $number');
+  }
 
 }
