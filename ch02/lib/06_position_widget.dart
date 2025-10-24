@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      home: const MyHomePage(title: 'Welcome to th hell'),
+      home: const MyHomePage(title: '06.워치 관련 위젯 실습'),
     );
   }
 }
@@ -35,12 +35,109 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text('Hello Flutter!'),
-            Text('Hello Word!')
+          children: [
+
+            // Align : 특정 위치에 배치하기
+            Container(
+              width: double.infinity, // 가로폭 100%
+              height: 200,
+              decoration: BoxDecoration(
+                border: Border.all(width: 1)
+              ),
+
+              child: Align(
+                alignment: Alignment.topRight,
+                child: Container(
+                  width: 100,
+                  height: 100,
+                  color: Colors.purpleAccent,
+                ),
+              ),
+            ),
+
+            // FractionalOffset
+            Container(
+              width: double.infinity, // 가로폭 100%
+              height: 200,
+              decoration: BoxDecoration(
+                  border: Border.all(width: 2)
+              ),
+
+              child: Align(
+                alignment: FractionalOffset(0.8, 0.3),
+                child: Container(
+                  width: 100,
+                  height: 100,
+                  color: Colors.deepPurpleAccent,
+                ),
+              ),
+            ),
+
+            // Stack : 위젯을 겹쳐서 배치
+            Stack(
+              children: [
+                Container(
+                  width: 150,
+                  height: 150,
+                  color: Colors.red,
+                ),
+
+                Container(
+                  width: 100,
+                  height: 100,
+                  color: Colors.purple,
+                ),
+
+                Container(
+                  width: 50,
+                  height: 50,
+                  color: Colors.blueAccent,
+                )
+              ],
+            ),
+
+            // IndexedStack : 위젯을 겹쳐서 배치하고 인덱스 번호로 화면에 표시
+            IndexedStack(
+              index: 0,
+              children: [
+                Text('첫번째 텍스트', style: TextStyle(fontSize: 24),),
+                Text('두번째 텍스트', style: TextStyle(fontSize: 26),),
+                Text('세번째 텍스트', style: TextStyle(fontSize: 28),),
+              ],
+            ),
+
+            // Positioned
+            Container(
+              width: double.infinity,
+              height: 200,
+              decoration: BoxDecoration(
+                border: Border.all(width: 1)
+              ),
+              child: Stack(
+                children: [
+                  Positioned( // Positioned 위젯은 반드시 Stack 위젯 자식으로 사용
+                  left: 10,
+                  top: 10,
+                    child: Container(
+                      width: 100,
+                      height: 100,
+                      color: Colors.red,
+                    )
+                  ),
+                  Positioned( // Positioned 위젯은 반드시 Stack 위젯 자식으로 사용
+                      right: 10,
+                      bottom: 10,
+                      child: Container(
+                        width: 100,
+                        height: 100,
+                        color: Colors.blue,
+                      )
+                  )
+                ],
+              ),
+            )
           ],
-        ),
+        )
       ),
     );
   }
