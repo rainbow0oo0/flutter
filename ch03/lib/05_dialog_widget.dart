@@ -93,7 +93,7 @@ class DialogTest extends StatelessWidget {
 
           return Dialog(
             child: Container(
-              height: 400,
+              height: 150,
               padding: EdgeInsets.all(10),
               child: Column(
                 children: [
