@@ -45,17 +45,19 @@ class _MyHomePageState extends State<MyHomePage> {
             value: 0.5, // 진행률(없으면 무한 회전)
           ),
           SizedBox(height: 50),
+
           Text('선형 인디케이터'),
           SizedBox(height: 50),
+
           LinearProgressIndicator(),
           SizedBox(height: 50),
+
           LinearProgressIndicator(
             value: 0.6,
             backgroundColor: Colors.purpleAccent,
             color: Colors.deepPurpleAccent,
             minHeight: 20,
           )
-
         ],
 
       )
