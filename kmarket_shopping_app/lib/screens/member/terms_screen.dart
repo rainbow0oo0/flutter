@@ -52,7 +52,6 @@ class _TermsScreenState extends State<TermsScreen> {
                     child: const Text('동의하고 회원가입 계속')
                 ),
               )
-
             ],
           ),
         ),
@@ -66,7 +65,7 @@ class _TermsScreenState extends State<TermsScreen> {
       padding: EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
         children: [
-          Checkbox(value: false, onChanged: null, activeColor: Colors.blueAccent,),
+          Checkbox(value: value, onChanged: null, activeColor: Colors.blueAccent,),
           Expanded(
               child: Text('$title ${isRequired ? '(필수)' : '(선택)'}'),
           ),
