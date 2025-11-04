@@ -1,8 +1,15 @@
 
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kmarket_shopping_app/config/app_config.dart';
+import 'package:kmarket_shopping_app/models/cart.dart';
 import 'package:kmarket_shopping_app/models/product.dart';
+import 'package:kmarket_shopping_app/providers/auth_provider.dart';
+import 'package:kmarket_shopping_app/screens/member/login_screen.dart';
+import 'package:kmarket_shopping_app/services/cart_service.dart';
+import 'package:provider/provider.dart';
 
 class ProductViewScreen extends StatefulWidget {
 
@@ -12,7 +19,6 @@ class ProductViewScreen extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() => _ProductViewScreen();
-
 }
 
 class _ProductViewScreen extends State<ProductViewScreen>{
@@ -20,12 +26,43 @@ class _ProductViewScreen extends State<ProductViewScreen>{
   // 수량 상태
   int _quantity = 1;
 
+  final cartService = CartService();
+
+  // 장바구니 추가 함수
+  void _addCart() async{
+
+    int pno = widget.product.pno;
+
+    Map<String, dynamic> jsonData = await cartService.addCart(pno, _quantity);
+    // Cart savedCart = Cart.fromJson(jsonData);
+    // log('savedCart : $savedCart');
+
+    if(jsonData.isNotEmpty) {
+      showDialog(
+          context: context,
+          builder: (context) =>
+              AlertDialog(
+                title: const Text('장바구니 등록 성공!'),
+                content: const Text('상품이 장바구니에 담겼습니다.'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('확인'),
+                  ),
+                ],
+              )
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
 
+    final authProvider = Provider.of<AuthProvider>(context);
+    final isLoggedIn = authProvider.isLoggedIn; // 로그인 상태 가져오기
+
     // ProductViewScreen 속성 product 참조
     final product = widget.product;
-
     final finalPrice = product.price * (1 - product.discount / 100);
 
     return Scaffold(
@@ -38,10 +75,10 @@ class _ProductViewScreen extends State<ProductViewScreen>{
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              height: 300,
               child: Image.network(
+                width: double.infinity,
                 '${AppConfig.baseUrl}/product/image/${product.thumb240}',
-                fit: BoxFit.cover,
+                fit: BoxFit.fitWidth, // 가로폭 전체 채우고 비율 유지
               )
             ),
             const SizedBox(height: 10,),
@@ -105,7 +142,38 @@ class _ProductViewScreen extends State<ProductViewScreen>{
               children: [
                 Expanded(
                   child: ElevatedButton.icon(
-                    onPressed: (){},
+                    onPressed: (){
+                      if(isLoggedIn){
+                        _addCart();
+                      }else{
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('로그인이 필요합니다'),
+                            content: const Text('장바구니에 상품을 담으려면 로그인이 필요합니다. 로그인 화면으로 이동하시겠습니까?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context), // 닫기
+                                child: const Text('취소'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context); // Alert 닫기
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const LoginScreen(),
+                                    ),
+                                  );
+                                },
+                                child: const Text('로그인으로 이동'),
+                              ),
+                            ],
+                          ),
+                        );
+
+                      }
+                    },
                     label: const Text('장바구니'),
                     icon: Icon(Icons.shopping_cart),
                   )
@@ -129,6 +197,8 @@ class _ProductViewScreen extends State<ProductViewScreen>{
             ),
             const SizedBox(height: 10,),
             Image.network('${AppConfig.baseUrl}/product/image/${product.thumb750}')
+
+
           ],
         ),
       )
